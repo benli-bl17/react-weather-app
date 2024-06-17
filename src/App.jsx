@@ -25,15 +25,15 @@ function App() {
       try {
         const data = await getFormattedWeatherData({ ...query, units });
         setWeather(data);
-        // 在查询后将城市名称添加到数组中
-        setCities((prevCities) => {
-          const lowercaseCity = query.q.toLowerCase();
-          const newCities = [...prevCities, lowercaseCity];
-          // 去重并保留最新的6个城市
-          const uniqueCities = Array.from(new Set(newCities)).slice(-6);
-          localStorage.setItem("cities", JSON.stringify(uniqueCities));
-          return uniqueCities;
-        });
+        if (query.q) {
+          setCities((prevCities) => {
+            const lowercaseCity = query.q.toLowerCase();
+            const newCities = [...prevCities, lowercaseCity];
+            const uniqueCities = Array.from(new Set(newCities)).slice(-6);
+            localStorage.setItem("cities", JSON.stringify(uniqueCities));
+            return uniqueCities;
+          });
+        }
       } catch (e) {
         toast({
           title: "Weather data loading failed.",

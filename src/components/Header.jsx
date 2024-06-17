@@ -52,7 +52,7 @@ function Header({ setUnits, setQuery }) {
         <MdMyLocation onClick={handleLocationClick} />
       </Button>
       <Button variant="secondary" onClick={() => setIsDarkMode(!isDarkMode)}>
-        {isDarkMode ? <MdOutlineNightlight /> : <MdOutlineLightMode />}
+        {isDarkMode ? <MdOutlineLightMode /> : <MdOutlineNightlight />}
       </Button>
     </div>
   );
