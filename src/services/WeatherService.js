@@ -1,19 +1,37 @@
 import { DateTime } from "luxon";
+import axios from "axios";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 const BASE_URL = "https://api.openweathermap.org/data/2.5/";
 
-const getWeatherData = (infoType, params) => {
-  const url = new URL(infoType, BASE_URL);
-  url.search = new URLSearchParams({ ...params, appid: API_KEY });
+const getWeatherData = async (infoType, params) => {
+  try {
+    const url = new URL(infoType, BASE_URL);
+    const response = await axios.get(url.toString(), {
+      params: { ...params, appid: API_KEY },
+    });
 
-  return fetch(url).then((res) => {
-    if (!res.ok) {
-      throw new Error(" Please check the city name and try again.");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      const { status } = error.response;
+      switch (status) {
+        case 400:
+          throw new Error("Bad Request: Please check the provided parameters");
+        case 401:
+          throw new Error("Unauthorized: API key is missing or invalid");
+        case 404:
+          throw new Error("Not Found: The requested city does not exist");
+        default:
+          throw new Error("Request failed");
+      }
+    } else if (error.request) {
+      throw new Error("No response received from the server");
+    } else {
+      throw new Error("Failed to send request");
     }
-    return res.json();
-  });
+  }
 };
 
 const formatToLocalTime = (
